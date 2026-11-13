@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+*.user
+.claude/
+
+# Private working notes: they hold local paths and never reach a published copy.
+CLAUDE.md
+NOTES.md
+STATE.md
