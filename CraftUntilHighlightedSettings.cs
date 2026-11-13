@@ -99,7 +99,7 @@ public class CraftUntilHighlightedSettings : ISettings
 
     private void DrawResetAllSettings()
     {
-        var armed = ImGui.GetIO().KeyCtrl;
+        var armed = ImGui.IsKeyDown(ImGuiKey.ModCtrl);
 
         ImGui.BeginDisabled(!armed);
         var clicked = ImGui.Button("Reset all settings to defaults###cuhResetAllSettings");
