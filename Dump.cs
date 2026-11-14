@@ -24,8 +24,10 @@ namespace CraftUntilHighlighted;
 ///
 /// 1. Where the crafting item and the search box are: the items section marks the craftable item, and the cursor and
 ///    crafting item sections give the paths CraftingSlot and StashSearch found, which the element tree shows in place.
-/// 2. Whether PoE1's stash search sets Element.isHighlighted on the item: the crafting item line and the element tree,
-///    and the changes section between a dump with a matching search and one without.
+/// 2. What follows the stash search on the item: the crafting item's search line gives the decider (not dimmed,
+///    Element.IsSaturated) beside Element.isHighlighted, which decided until patch 3.30 (see
+///    CraftingSlot.SearchHighlight); the items section and the element tree give both for every item. A dump with a
+///    search that matches the item and one with a search that does not settle it.
 /// 3. What applying an orb changes: the crafting item's ItemFingerprint, element and entity addresses and modifiers, in
 ///    a dump either side of one orb.
 ///

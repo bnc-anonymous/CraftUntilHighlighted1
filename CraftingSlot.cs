@@ -244,22 +244,33 @@ internal static class CraftingSlot
     }
 
     /// <summary>
-    /// What the stash search is doing to one item element. Highlighted is Element.isHighlighted, which is what decides.
+    /// What the stash search is doing to one item element. Highlighted is what decides: the item is not dimmed
+    /// (Element.IsSaturated), which, with a search in the box, means the search matches it - the game dims every item it
+    /// does not match. With the box empty nothing is dimmed and every item reads highlighted, which is why every caller
+    /// has a search first (StashSearch.HasSearch), and why a search emptied mid-run stops the run rather than rolling on.
     ///
-    /// Measured in PoE2 only (dumps of 2026-10-26, one ring and three searches): isHighlighted was true while the search
-    /// matched the ring and false with no search or a search that did not match, and a match also set the ring's
-    /// BordColor, which is kept for the readout. ExileCore has the same property; whether PoE1's stash search sets it is
-    /// not yet measured. The craft square's highlighted colour shows it: with a search that matches the item, the square
-    /// should turn purple.
+    /// Element.isHighlighted decided until patch 3.30, as it did in PoE2 (dumps of 2026-10-26, one ring and three
+    /// searches). With ExileApi's build for 3.30 it no longer follows the search: on the same tincture it read true matching
+    /// and true not matching, and 64 of the tab's 66 item elements read true, Chaos Orbs and Scrolls of Wisdom among them,
+    /// with "reduced mana burn|damage over time multiplier" typed; the run rolled past a match and refused to start on an
+    /// item that did not match (reported 2026-11-14). In the same two dumps (2026-11-14 18:02:04 and 18:03:22) IsSaturated
+    /// was true on the tincture while it had a damage over time multiplier and false once it had only a critical strike
+    /// multiplier, and false on every currency stack. isHighlighted and the border, whose colours read as pointer bytes
+    /// since the same build, are kept for the readout only.
+    ///
+    /// An element that cannot be read counts as matched: a run then stops at the highlighted gate, where clicking again on
+    /// a failed read could roll past a match.
     /// </summary>
-    public readonly record struct SearchHighlight(bool Highlighted, ColorBGRA Border)
+    public readonly record struct SearchHighlight(bool Highlighted, bool IsHighlightedField, ColorBGRA Border)
     {
         public override string ToString() =>
-            $"isHighlighted {Highlighted}, border #{Border.A:X2}{Border.R:X2}{Border.G:X2}{Border.B:X2}";
+            $"matched (not dimmed) {Highlighted}; isHighlighted {IsHighlightedField} (not used), " +
+            $"border #{Border.A:X2}{Border.R:X2}{Border.G:X2}{Border.B:X2}";
     }
 
     public static SearchHighlight SearchHighlightOf(Element item) =>
-        new(Safe.Read(item, static e => e.isHighlighted, false), Safe.Read(item, static e => e.BordColor, default(ColorBGRA)));
+        new(Safe.Read(item, static e => e.IsSaturated, true), Safe.Read(item, static e => e.isHighlighted, false),
+            Safe.Read(item, static e => e.BordColor, default(ColorBGRA)));
 
     public static bool Contains(RectangleF rect, Vector2 point) =>
         rect.Width > 0f && point.X >= rect.Left && point.X <= rect.Right && point.Y >= rect.Top && point.Y <= rect.Bottom;
