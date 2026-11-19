@@ -281,14 +281,15 @@ public class CraftingSettings
     public CustomNode AugmentGroup { get; set; } = Section.Of("Augment");
 
     /// <summary>
-    /// Whether the augment boxes are drawn beside the crafting item while an Orb of Alteration is selected, and so whether
-    /// a run of alterations can apply Orbs of Augmentation. On for a new install. See AugmentBoxes.
+    /// Whether the augment boxes are drawn beside the crafting item while an Orb of Alteration is selected and a search is
+    /// typed, and so whether a run of alterations can apply Orbs of Augmentation. On for a new install. See AugmentBoxes.
     /// </summary>
     [Menu("Enable augment boxes",
-        "While an Orb of Alteration is selected, two boxes show to the right of the item:\n" +
-        "Augment on empty prefix and Augment on empty suffix. Move the cursor into one\n" +
-        "to switch it on (bright) or off (dim). With one on, a run applies an Orb of\n" +
-        "Augmentation (Alteration with Alt held) when an alteration leaves that slot empty.")]
+        "While an Orb of Alteration is selected and a search is typed, two boxes show\n" +
+        "to the right of the item: Augment on empty prefix and Augment on empty suffix.\n" +
+        "Move the cursor into one to switch it on (bright) or off (dim). With one on, a\n" +
+        "run applies an Orb of Augmentation (Alteration with Alt held) when an alteration\n" +
+        "leaves that slot empty.")]
     public ToggleNode EnableAugmentBoxes { get; set; } = new(true);
 
     [JsonIgnore]

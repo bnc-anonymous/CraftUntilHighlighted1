@@ -37,7 +37,7 @@ Note: the below images are from PoE2, this is a PoE1 port with identical UI.
 
 ## Augment boxes
 
-While an Orb of Alteration is selected, two boxes show to the right of the item: **Augment on empty prefix** above **Augment on empty suffix**. Move the cursor into a box to switch it on (bright) or off (dim); it switches again only after you move out and back in. Both start off each session.
+While an Orb of Alteration is selected and a search is typed in the stash search, two boxes show to the right of the item: **Augment on empty prefix** above **Augment on empty suffix**. Move the cursor into a box to switch it on (bright) or off (dim); it switches again only after you move out and back in. Both start off each session.
 
 With a box on, whenever the item is a magic item with that slot empty and not highlighted, the plugin holds Alt to turn the Orb of Alteration into an Orb of Augmentation, waits to see it on the cursor, applies it, and lets go of Alt. Then it carries on with alterations. The boxes can be turned off with **Enable augment boxes** in the plugin's Crafting settings.
 

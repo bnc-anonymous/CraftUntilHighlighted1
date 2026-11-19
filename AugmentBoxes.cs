@@ -11,11 +11,12 @@ namespace CraftUntilHighlighted;
 
 /// <summary>
 /// Two boxes stacked to the right of the crafting item, bottom-aligned with it, while an Orb of Alteration is selected
-/// (or an Orb of Augmentation with Alt held, which is what Alt makes of a selected alteration): Augment on empty prefix
-/// above Augment on empty suffix. Moving the cursor into one switches it, dim (off) to bright (on) or back; it switches
-/// again only once the cursor has left and come back in. Hover rather than a click, because a click on the overlay goes
-/// through to the stash under it. Each starts off, every session; neither is saved. Drawn only with Enable augment boxes
-/// on (CraftingSettings.EnableAugmentBoxes).
+/// (or an Orb of Augmentation with Alt held, which is what Alt makes of a selected alteration) and the stash search box
+/// holds a search: Augment on empty prefix above Augment on empty suffix. Not without a search, because the boxes act
+/// only on a run and a run needs one, so with the box empty they would be a switch that does nothing. Moving the cursor
+/// into one switches it, dim (off) to bright (on) or back; it switches again only once the cursor has left and come back
+/// in. Hover rather than a click, because a click on the overlay goes through to the stash under it. Each starts off,
+/// every session; neither is saved. Drawn only with Enable augment boxes on (CraftingSettings.EnableAugmentBoxes).
 ///
 /// While either is on, a run of Orbs of Alteration applies an Orb of Augmentation after an alteration that leaves the
 /// item magic, not highlighted, and with that box's slot empty (WantsAugment; CraftLoop does it). Styled as
@@ -91,13 +92,18 @@ internal sealed class AugmentBoxes
     /// Places the boxes beside the crafting item and switches the one the cursor has just moved into. itemRect is the
     /// crafting item's, empty for none; selectedPath the selected currency's metadata, empty for none. When the boxes
     /// appear with the cursor already in one, that one does not switch until the cursor leaves it and comes back.
+    ///
+    /// The search is read here on every tick, last so it is read only when the boxes would otherwise show, rather than
+    /// taken from CraftingSlotCache: a run does not refresh the cache, and a search emptied mid-run leaves the run going,
+    /// at the highlighted gate, so a cached search would keep the boxes up until the run ended.
     /// </summary>
     public void Tick(GameController gc, CraftUntilHighlightedSettings settings, RectangleF itemRect, string selectedPath)
     {
         var forAlteration = selectedPath == AlterationPath ||
                             selectedPath == AugmentationPath && Safe.Read(static () => Input.IsKeyDown(Keys.Menu), false);
 
-        Shown = settings.Crafting.EnableAugmentBoxes && itemRect.Width > 0f && _labelSize.X > 0f && forAlteration;
+        Shown = settings.Crafting.EnableAugmentBoxes && itemRect.Width > 0f && _labelSize.X > 0f && forAlteration &&
+                StashSearch.HasSearch(gc);
 
         if (!Shown)
         {
